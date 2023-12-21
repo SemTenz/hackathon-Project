@@ -25,6 +25,7 @@
         <a href="{{ route('spotify.login') }}">Login with Spotify</a>
     </div>
     <a href="{{ route('spotify.profile') }}">Go to Spotify Profile</a>
+    <a href="{{ route('spotify.topView') }}">Go to top view</a>
 
 </body>
 
