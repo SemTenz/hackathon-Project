@@ -78,11 +78,13 @@ class SpotifyController extends Controller
 
     private function exchangeCodeForAccessToken($code)
     {
-        try {
+        // try {
             // Log the start of the token exchange process for debugging
             Log::info('Exchanging Authorization Code for Access Token: ' . $code);
 
-            $response = Http::asForm()->withHeaders([
+
+
+            $response = Http::asForm()->withOptions(['verify' =>false])->withHeaders([
                 'Authorization' => 'Basic ' . base64_encode(config('services.spotify.client_id') . ':' . config('services.spotify.client_secret')),
             ])->post('https://accounts.spotify.com/api/token', [
                 'grant_type' => 'authorization_code',
@@ -97,20 +99,20 @@ class SpotifyController extends Controller
 
             // Parse the response and return the access token
             return $response->json()['access_token'];
-        } catch (\Exception $e) {
-            // Log the exception details for debugging
-            Log::error('Exchange Code for Access Token Error: ' . $e->getMessage());
+        // } catch (\Exception $e) {
+        //     // Log the exception details for debugging
+        //     Log::error('Exchange Code for Access Token Error: ' . $e->getMessage());
 
-            // Rethrow the exception (optional)
-            throw new \Exception('Failed to exchange code for access token.');
-        }
+        //     // Rethrow the exception (optional)
+        //     throw new \Exception('Failed to exchange code for access token.');
+        // }
     }
 
     private function fetchSpotifyUserData($accessToken)
     {
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken,
-        ])->get('https://api.spotify.com/v1/me');
+        ])->withOptions(['verify' =>false])->get('https://api.spotify.com/v1/me');
 
         // Dump the entire response for debugging
         Log::info('Spotify API Response: ' . json_encode($response->json()));
@@ -123,7 +125,7 @@ class SpotifyController extends Controller
     {
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken,
-        ])->get('https://api.spotify.com/v1/tracks/' . $trackId);
+        ])->withOptions(['verify' =>false])->get('https://api.spotify.com/v1/tracks/' . $trackId);
 
         // Dump the entire response for debugging
         Log::info('Spotify Track Info Response: ' . json_encode($response->json()));
@@ -143,4 +145,46 @@ class SpotifyController extends Controller
 
         return $randomString;
     }
+
+    public function graphic()
+{
+    // Your logic for the Spotify graphic route goes here
+    // This method should handle the functionality related to displaying the Spotify graphic
+
+    // Example: Redirect to a Spotify graphic URL
+    return Redirect::route('spotify.graphic');
+}
+
+
+public function getFollowedArtists()
+{
+    // Check if the user is authenticated
+    if (Auth::check()) {
+        // Get the currently authenticated user
+        $user = Auth::user();
+
+        // Fetch followed artists using the user's access token
+        $accessToken = $user->spotify_access_token;
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $accessToken,
+        ])->get('https://api.spotify.com/v1/me/following?type=artist');
+
+        $followedArtists = $response->json();
+
+        // Log the response to inspect the data
+        Log::info('Followed Artists API Response: ' . json_encode($followedArtists));
+
+        // Debug: Dump the structure of $followedArtists
+        dd($followedArtists);
+        // Return the spotifygraphic view with followedArtists data
+        return view('spotifygraphic', compact('followedArtists'));
+    }
+    
+
+    // If the user is not authenticated, redirect to the login page
+    return redirect()->route('spotify.login');
+}
+
+
 }

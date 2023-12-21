@@ -6,7 +6,10 @@
     <title>Spotify Profile</title>
 </head>
 <body>
+
     <h1>Spotify Profile</h1>
+    <a href="{{ route('spotify.graphic') }}">Go to Spotify graphic</a>
+
 
     @if(isset($spotifyProfileData['display_name']))
         <p>

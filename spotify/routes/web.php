@@ -10,7 +10,7 @@ Route::get('/spotify/callback', [SpotifyController::class, 'handleCallback'])->n
 Route::get('/spotify/profile', [SpotifyController::class, 'profile'])->name('spotify.profile');
 
 
-
+Route::view('/spotify/graphic', 'spotifygraphic')->name('spotify.graphic');
 
 Route::view('/', 'welcome');
 
@@ -22,5 +22,6 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 require __DIR__.'/auth.php';
+
 
 
