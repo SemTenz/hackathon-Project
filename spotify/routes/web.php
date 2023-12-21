@@ -9,6 +9,8 @@ Route::get('/spotify/login', [SpotifyController::class, 'login'])->name('spotify
 Route::get('/spotify/callback', [SpotifyController::class, 'handleCallback'])->name('spotify.callback');
 Route::get('/spotify/profile', [SpotifyController::class, 'profile'])->name('spotify.profile');
 
+Route::view('/spotify/topView', 'topView')->name('spotify.topView');
+
 
 Route::view('/spotify/graphic', 'spotifygraphic')->name('spotify.graphic');
 

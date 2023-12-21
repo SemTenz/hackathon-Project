@@ -187,5 +187,8 @@
     </div>
     <a class="spotify-home-btn" href="{{ url('/') }}">Home</
 
+    
+
+    
 </body>
 </html>

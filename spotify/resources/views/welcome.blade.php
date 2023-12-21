@@ -118,6 +118,9 @@
             <!-- Your other content goes here -->
         </div>
     </div>
+    <a href="{{ route('spotify.profile') }}">Go to Spotify Profile</a>
+    <a href="{{ route('spotify.topView') }}">Go to top view</a>
+
 </body>
 
 </html>
