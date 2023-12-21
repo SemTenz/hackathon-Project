@@ -157,34 +157,46 @@ class SpotifyController extends Controller
 
 
 public function getFollowedArtists()
-{
-    // Check if the user is authenticated
-    if (Auth::check()) {
-        // Get the currently authenticated user
-        $user = Auth::user();
+    {
+        // Check if the user is authenticated
+        if (Auth::check()) {
+            // Get the currently authenticated user
+            $user = Auth::user();
 
-        // Fetch followed artists using the user's access token
-        $accessToken = $user->spotify_access_token;
+            // Fetch followed artists using the user's access token
+            $accessToken = $user->spotify_access_token;
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $accessToken,
-        ])->get('https://api.spotify.com/v1/me/following?type=artist');
+            // Log the access token for debugging
+            Log::info('Spotify Access Token: ' . $accessToken);
 
-        $followedArtists = $response->json();
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $accessToken,
+            ])->get('https://api.spotify.com/v1/me/following?type=artist');
 
-        // Log the response to inspect the data
-        Log::info('Followed Artists API Response: ' . json_encode($followedArtists));
+            // Log the entire API response for debugging
+            Log::info('Spotify API Response: ' . $response->status() . ' - ' . $response->body());
 
-        // Debug: Dump the structure of $followedArtists
-        dd($followedArtists);
-        // Return the spotifygraphic view with followedArtists data
-        return view('spotifygraphic', compact('followedArtists'));
+            // Check if the request was successful
+            if ($response->successful()) {
+                $followedArtists = $response->json();
+
+                // Log the response to inspect the data
+                Log::info('Followed Artists API Response: ' . json_encode($followedArtists));
+
+                // Return the spotifygraphic view with followedArtists data
+                return view('spotifygraphic', compact('followedArtists'));
+            } else {
+                // Log the error response
+                Log::error('Error fetching followed artists: ' . $response->body());
+
+                // Handle the error, for example, redirect the user to an error page
+                return view('error');
+            }
+        }
+
+        // If the user is not authenticated, redirect to the login page
+        return redirect()->route('spotify.login');
     }
-    
-
-    // If the user is not authenticated, redirect to the login page
-    return redirect()->route('spotify.login');
-}
 
 
 }
