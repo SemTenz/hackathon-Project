@@ -11,91 +11,93 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Add Advanced Styling -->
     <style>
-        body {
-            font-family: 'figtree', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #191414;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            color: #333; /* Set the default text color */
-        }
+    body {
+        font-family: 'figtree', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #191414;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        color: #333;
+    }
 
-        h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
-            color: #1db954; /* Set the heading color */
-        }
+    h1 {
+        font-size: 2em;
+        margin-bottom: 20px;
+        color: #1db954;
+    }
 
-        a {
-            text-decoration: none;
-            color: #007bff;
-            transition: color 0.3s ease; /* Add a smooth transition effect */
-        }
+    a {
+        text-decoration: none;
+        color: #007bff;
+        transition: color 0.3s ease;
+    }
 
-        a:hover {
-            color: #0056b3; /* Change the color on hover */
-        }
+    a:hover {
+        color: #0056b3;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+    }
 
-        .navigation {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+    .navigation {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
 
-        .navigation a {
-            margin: 0 10px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 16px;
-            transition: background-color 0.3s ease; /* Add a smooth transition effect */
-        }
+    .navigation a {
+        margin: 0 10px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
 
-        .navigation a.spotify-login-btn {
-            background-color: #1db954;
-            color: #ffffff;
-        }
+    .navigation a.spotify-login-btn {
+        background-color: #1db954;
+        color: #ffffff;
+    }
 
-        .navigation a.spotify-profile-btn {
-            background-color: #007bff;
-            color: #ffffff;
-        }
+    .navigation a.spotify-profile-btn {
+        background-color: #007bff;
+        color: #ffffff;
+    }
 
-        .navigation a.spotify-graphic-btn {
-            background-color: #ff6f61;
-            color: #ffffff;
-        }
+    .navigation a.spotify-graphic-btn {
+        background-color: #ff6f61;
+        color: #ffffff;
+    }
+    .navigation a.spotify-topview-btn {
+        background-color: #fff200;
+        color: #ffffff;
+    }
+    .navigation a:hover {
+        background-color: black;
+    }
 
-        .navigation a:hover {
-            background-color: black; /* Change the background color on hover */
-        }
+    .main-content {
+        margin-top: 20px;
+        font-size: 18px;
+        line-height: 1.6;
+    }
 
-        .main-content {
-            margin-top: 20px;
-            font-size: 18px;
-            line-height: 1.6;
-        }
-
-        .spoti {
-            font-size: 50px;
-            font-weight: bold;  
-        }
-    </style>
+    .spoti {
+        font-size: 50px;
+        font-weight: bold;
+    }
+</style>
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -113,14 +115,12 @@
             <a href="{{ route('spotify.login') }}" class="spotify-login-btn">Login with Spotify</a>
             <a href="{{ route('spotify.profile') }}" class="spotify-profile-btn">Go to Spotify Profile</a>
             <a href="{{ route('spotify.graphic') }}" class="spotify-graphic-btn">Go to Spotify Graphic</a>
+            <a href="{{ route('spotify.topView') }}" class="spotify-topview-btn">Go to top view</a>
         </div>
         <div class="main-content">
             <!-- Your other content goes here -->
         </div>
     </div>
-    <a href="{{ route('spotify.profile') }}">Go to Spotify Profile</a>
-    <a href="{{ route('spotify.topView') }}">Go to top view</a>
-
 </body>
 
 </html>

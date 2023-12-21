@@ -10,46 +10,78 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            margin: 20px;
+            margin: 0;
             padding: 0;
-            background-color: #f8f8f8;
+            background-color: #181818;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
 
         h1, h2 {
-            color: #333;
+            color: #1db954;
             text-align: center;
+            margin-bottom: 20px;
         }
 
         div {
-            background-color: #fff;
+            background-color: #212121;
             padding: 20px;
             margin: 20px 0;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
         }
 
         p {
             margin: 0 0 10px;
+            color: rgb(255, 215, 0);
+            font-size: 18px;
+            font-weight: bold;
         }
 
         img {
-            max-width: 100%;
+            max-width: 20%;
             height: auto;
             border-radius: 4px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+            border: 5px solid rgb(255, 215, 0); 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        img:hover {
+            transform: scale(1.1);
         }
 
         .no-data {
             color: #888;
             font-style: italic;
         }
-    </style>
+        .spotify-home-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1db954;
+            color: #ffffff;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+    </style>    
 </head>
 
 <body>
 
 
-    <h1>Top Artists</h1>
+    <h1>Statistics</h1>
 
     <div>
         <!-- Display information about the top artist -->
@@ -89,6 +121,7 @@
         <p>No top song data available.</p>
     @endif
 </div>
+<a class="spotify-home-btn" href="{{ url('/') }}">Home</
 
 </body>
 </html>

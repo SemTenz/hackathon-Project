@@ -15,8 +15,8 @@ class SpotifyController extends Controller
     {
         $state = $this->generateRandomString(16);
 
-        // Store the state in the session or database
-        session(['spotify_auth_state' => $state]);
+        // Store the state and intended URL in the session
+        session(['spotify_auth_state' => $state, 'intended_url' => url()->previous()]);
 
         return Redirect::to('https://accounts.spotify.com/authorize?' . http_build_query([
             'response_type' => 'code',
@@ -73,17 +73,35 @@ class SpotifyController extends Controller
         $topArtist = $this->getTopArtists($accessToken);
 
         // Use the access token to fetch most listened artist data
-        $mostListenedArtist = $this->getTopSong($accessToken);
+   $mostListenedArtist = $this->getTopSong($accessToken);
+;
     // Use the access token to fetch top song from the Spotify API
     $topSong = $this->getTopSong($accessToken);
 
+    // Now, let's use the access token to get information about a specific track
+    $trackId = '2TpxZ7JUBn3uw46aR7qd6V'; // Replace with the desired track ID
+    $trackInfo = $this->getSpotifyTrackInfo($accessToken, $trackId);
+
     // For demonstration purposes, assume a successful callback and display a success view
-    return view('topview', [
-        'topArtist' => isset($topArtist['items'][0]) ? $topArtist['items'][0] : null,
-        'mostListenedArtist' => $mostListenedArtist,
-        'topSong' => isset($topSong['items'][0]) ? $topSong['items'][0] : null,
+    return view('spotifyprofile', [
+        'spotifyProfileData' => $spotifyProfileData,
+        'trackInfo' => $trackInfo,
     ]);
 }
+
+private function getSpotifyTrackInfo($accessToken, $trackId)
+{
+    $response = Http::withHeaders([
+        'Authorization' => 'Bearer ' . $accessToken,
+    ])->get('https://api.spotify.com/v1/tracks/' . $trackId);
+
+    // Dump the entire response for debugging
+    Log::info('Spotify Track Info Response: ' . json_encode($response->json()));
+
+    // Parse the response and return track data
+    return $response->json();
+}
+
 
 private function getTopSong($accessToken)
 {
@@ -96,12 +114,12 @@ private function getTopSong($accessToken)
 
     // Parse the response and return top song
     return $response->json();
+    
 }
 
     private function exchangeCodeForAccessToken($code)
     {
-        // try {
-            // Log the start of the token exchange process for debugging
+        
             Log::info('Exchanging Authorization Code for Access Token: ' . $code);
 
 
@@ -121,14 +139,8 @@ private function getTopSong($accessToken)
 
             // Parse the response and return the access token
             return $response->json()['access_token'];
-        } catch (\Exception $e) {
-            // Log the exception details for debugging
-            Log::error('Exchange Code for Access Token Error: ' . $e->getMessage());
-
-            // Rethrow the exception (optional)
-            throw new \Exception('Failed to exchange code for access token.');
         }
-    }
+    
 
     private function fetchSpotifyUserData($accessToken)
     {
@@ -144,18 +156,28 @@ private function getTopSong($accessToken)
     }
 
     private function getTopArtists($accessToken)
-    {
+{
+    try {
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken,
-        ])->get('https://api.spotify.com/v1/tracks/' . $trackId);
+        ])->get('https://api.spotify.com/v1/me/top/artists?limit=1');
 
-        // Dump the entire response for debugging
-        Log::info('Top Artists Response: ' . json_encode($response->json()));
-
-        // Parse the response and return top artists
-        return $response->json();
+        if ($response->successful()) {
+            $data = $response->json();
+            // Check for the 'items' key in the response
+            if (isset($data['items'][0])) {
+                return $data['items'][0];
+            }
+        } else {
+            Log::error('Error fetching top artists: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception in getTopArtists: ' . $e->getMessage());
     }
 
+    return null;
+}
+    
     
 
     private function generateRandomString($length = 16)
