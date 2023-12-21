@@ -92,7 +92,7 @@
         }
 
         .spoti {
-            font-size: 20px;
+            font-size: 50px;
             font-weight: bold;  
         }
     </style>
