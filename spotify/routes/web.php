@@ -1,17 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+// routes/web.php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\SpotifyController;
+
+Route::get('/spotify/login', [SpotifyController::class, 'login'])->name('spotify.login');
+Route::get('/spotify/callback', [SpotifyController::class, 'handleCallback'])->name('spotify.callback');
+Route::get('/spotify/profile', [SpotifyController::class, 'profile'])->name('spotify.profile');
+
+
+
+
 Route::view('/', 'welcome');
 
 Route::view('dashboard', 'dashboard')

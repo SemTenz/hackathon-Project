@@ -20,10 +20,11 @@
         @if (Route::has('login'))
         <livewire:welcome.navigation />
         @endif
-
-        <h1>welkom ga naar Dashboard</h1>        
-  
+    
+        <!-- Add this within the body tag of your welcome.blade.php -->
+        <a href="{{ route('spotify.login') }}">Login with Spotify</a>
     </div>
+    <a href="{{ route('spotify.profile') }}">Go to Spotify Profile</a>
 
 </body>
 
