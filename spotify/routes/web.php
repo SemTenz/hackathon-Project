@@ -12,6 +12,8 @@ Route::get('/spotify/profile', [SpotifyController::class, 'profile'])->name('spo
 Route::view('/spotify/topView', 'topView')->name('spotify.topView');
 
 
+Route::view('/spotify/graphic', 'spotifygraphic')->name('spotify.graphic');
+
 Route::view('/', 'welcome');
 
 Route::view('dashboard', 'dashboard')
@@ -22,5 +24,6 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 require __DIR__.'/auth.php';
+
 
 

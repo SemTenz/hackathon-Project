@@ -100,10 +100,13 @@ private function getTopSong($accessToken)
 
     private function exchangeCodeForAccessToken($code)
     {
-        // Log the start of the token exchange process for debugging
-        Log::info('Exchanging Authorization Code for Access Token: ' . $code);
+        // try {
+            // Log the start of the token exchange process for debugging
+            Log::info('Exchanging Authorization Code for Access Token: ' . $code);
 
-        $response = Http::asForm()->withHeaders([
+
+
+        $response = Http::asForm()->withOptions(['verify' =>false])->withHeaders([
             'Authorization' => 'Basic ' . base64_encode(config('services.spotify.client_id') . ':' . config('services.spotify.client_secret')),
         ])->post('https://accounts.spotify.com/api/token', [
             'grant_type' => 'authorization_code',
@@ -116,15 +119,22 @@ private function getTopSong($accessToken)
         // Dump the entire response for debugging
         Log::info('Token Exchange Response: ' . json_encode($response->json()));
 
-        // Parse the response and return the access token
-        return $response->json()['access_token'];
+            // Parse the response and return the access token
+            return $response->json()['access_token'];
+        } catch (\Exception $e) {
+            // Log the exception details for debugging
+            Log::error('Exchange Code for Access Token Error: ' . $e->getMessage());
+
+            // Rethrow the exception (optional)
+            throw new \Exception('Failed to exchange code for access token.');
+        }
     }
 
     private function fetchSpotifyUserData($accessToken)
     {
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken,
-        ])->get('https://api.spotify.com/v1/me');
+        ])->withOptions(['verify' =>false])->get('https://api.spotify.com/v1/me');
 
         // Dump the entire response for debugging
         Log::info('Spotify API Response: ' . json_encode($response->json()));
@@ -137,7 +147,7 @@ private function getTopSong($accessToken)
     {
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken,
-        ])->get('https://api.spotify.com/v1/me/top/artists?limit=1'); // Added limit to get only one top artist
+        ])->get('https://api.spotify.com/v1/tracks/' . $trackId);
 
         // Dump the entire response for debugging
         Log::info('Top Artists Response: ' . json_encode($response->json()));
@@ -159,4 +169,58 @@ private function getTopSong($accessToken)
 
         return $randomString;
     }
+
+    public function graphic()
+{
+    // Your logic for the Spotify graphic route goes here
+    // This method should handle the functionality related to displaying the Spotify graphic
+
+    // Example: Redirect to a Spotify graphic URL
+    return Redirect::route('spotify.graphic');
+}
+
+
+public function getFollowedArtists()
+    {
+        // Check if the user is authenticated
+        if (Auth::check()) {
+            // Get the currently authenticated user
+            $user = Auth::user();
+
+            // Fetch followed artists using the user's access token
+            $accessToken = $user->spotify_access_token;
+
+            // Log the access token for debugging
+            Log::info('Spotify Access Token: ' . $accessToken);
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $accessToken,
+            ])->get('https://api.spotify.com/v1/me/following?type=artist');
+
+            // Log the entire API response for debugging
+            Log::info('Spotify API Response: ' . $response->status() . ' - ' . $response->body());
+
+            // Check if the request was successful
+            if ($response->successful()) {
+                $followedArtists = $response->json();
+
+                // Log the response to inspect the data
+                Log::info('Followed Artists API Response: ' . json_encode($followedArtists));
+
+                // Return the spotifygraphic view with followedArtists data
+                return view('spotifygraphic', compact('followedArtists'));
+            } else {
+                // Log the error response
+                Log::error('Error fetching followed artists: ' . $response->body());
+
+                // Handle the error, for example, redirect the user to an error page
+                return view('error');
+            }
+        }
+
+        // If the user is not authenticated, redirect to the login page
+        return redirect()->route('spotify.login');
+    }
+
+
 }
